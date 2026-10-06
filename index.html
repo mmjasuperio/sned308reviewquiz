@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Review Quiz: Defining, Observing and Measuring Behavior</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style id="css">
+:root{
+  --paper:#FBFCF8; --panel:#FFFFFF; --grid:#DCE7EE; --ink:#1B2B4B; --ink-soft:#4A5872;
+  --blue:#1F4FB8; --blue-tint:#E8EFFC; --pencil:#F2C230; --pencil-tint:#FFF6D6;
+  --red:#C23A2B; --red-tint:#FCE9E6; --green:#2B7A4B; --green-tint:#E3F4EA; --line:#CBD5E1;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131A26; --panel:#1B2433; --grid:#222D40; --ink:#E8EDF6; --ink-soft:#A7B3C8;
+    --blue:#7FA6FF; --blue-tint:#1E2C4A; --pencil-tint:#3A3218;
+    --red:#FF8A7A; --red-tint:#40221F; --green:#6BD49A; --green-tint:#17362A; --line:#334058;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131A26; --panel:#1B2433; --grid:#222D40; --ink:#E8EDF6; --ink-soft:#A7B3C8;
+  --blue:#7FA6FF; --blue-tint:#1E2C4A; --pencil-tint:#3A3218;
+  --red:#FF8A7A; --red-tint:#40221F; --green:#6BD49A; --green-tint:#17362A; --line:#334058;
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{min-height:100%}
+body{margin:0;color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.1rem;line-height:1.55;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--pencil);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+.wrap{max-width:780px;margin:0 auto;padding:2rem 1.1rem 5rem}
+.bar{display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem}
+.bar .t{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1rem;margin-right:auto}
+.icon-btn{border:none;background:transparent;cursor:pointer;font-size:1.2rem;padding:.2rem .4rem}
+.sheet{background:var(--panel);border:2px solid var(--ink);border-radius:14px;padding:1.6rem 1.5rem}
+@media (max-width:520px){.sheet{padding:1.2rem 1rem}}
+
+.btn{border:2px solid var(--ink);background:var(--ink);color:var(--paper);padding:.55rem 1.05rem;border-radius:10px;cursor:pointer;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.small{padding:.3rem .7rem;font-size:.95rem}
+.btn.danger{border-color:var(--red);background:transparent;color:var(--red)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+
+/* Start */
+.start h1{font-size:clamp(2rem,6vw,3rem);font-weight:800;letter-spacing:-.02em;max-width:16ch}
+.start p.lead{color:var(--ink-soft);max-width:56ch}
+.choices{display:grid;gap:.6rem;margin:1.2rem 0 1.2rem}
+.choice{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;text-align:left;border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:.8rem 1rem;cursor:pointer}
+.choice:hover:not(:disabled){border-color:var(--ink)}
+.choice:disabled{opacity:.45;cursor:not-allowed}
+.choice[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-tint)}
+.choice .dot{width:1.1rem;height:1.1rem;border-radius:50%;border:2px solid var(--ink-soft)}
+.choice[aria-pressed="true"] .dot{border-color:var(--blue);background:radial-gradient(var(--blue) 45%,transparent 50%)}
+.choice b{font-family:"Bricolage Grotesque",sans-serif;display:block}
+.choice small{color:var(--ink-soft);font-size:.95rem}
+.choice .n{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;color:var(--ink-soft);white-space:nowrap}
+.timer-note{display:flex;gap:.6rem;align-items:center;border:2px dashed var(--line);border-radius:12px;padding:.6rem .9rem;margin-bottom:1.2rem;font-size:1rem}
+.note{font-size:.95rem;color:var(--ink-soft);margin-top:1rem}
+
+/* Question */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.95rem;color:var(--ink-soft);margin-bottom:.4rem;flex-wrap:wrap}
+.tag{border:1.5px solid var(--line);border-radius:999px;padding:.05rem .6rem;font-size:.85rem}
+.clock{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.05rem;border:2px solid var(--ink);border-radius:999px;padding:.05rem .7rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.clock.low{border-color:var(--red);color:var(--red);background:var(--red-tint)}
+.progress{height:8px;background:var(--grid);border-radius:999px;overflow:hidden;margin-bottom:.4rem}
+.progress span{display:block;height:100%;background:var(--blue);transition:width .25s}
+.tbar{height:4px;background:transparent;border-radius:999px;overflow:hidden;margin-bottom:1.1rem}
+.tbar span{display:block;height:100%;background:var(--pencil)}
+.stem{font-size:1.25rem;font-weight:700;margin-bottom:1rem}
+.opts{display:grid;gap:.55rem}
+.opt{display:grid;grid-template-columns:2rem 1fr;gap:.5rem;align-items:start;text-align:left;border:2px solid var(--line);background:var(--panel);border-radius:10px;padding:.65rem .8rem;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt .l{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;color:var(--ink-soft)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--green);background:var(--green-tint)}
+.opt.right .l{color:var(--green)}
+.opt.wrong{border-color:var(--red);background:var(--red-tint)}
+.opt.wrong .l{color:var(--red)}
+.fb{margin-top:1rem;border-radius:10px;padding:.85rem 1rem}
+.fb.ok{background:var(--green-tint)} .fb.no{background:var(--red-tint)}
+.fb b{font-family:"Bricolage Grotesque",sans-serif}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;gap:.6rem}
+.live{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;color:var(--ink-soft)}
+
+/* Results */
+.timesup{background:var(--pencil-tint);border-left:6px solid var(--pencil);border-radius:0 10px 10px 0;padding:.6rem 1rem;margin-bottom:1rem}
+.tallies{display:flex;flex-wrap:wrap;gap:.9rem .7rem;margin:.6rem 0 .4rem;min-height:56px;align-items:flex-end}
+.tallies svg{height:52px;width:auto;color:var(--ink)}
+.tallies svg path{stroke-dasharray:60;stroke-dashoffset:60;animation:draw .25s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.big{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(2.4rem,8vw,3.4rem);line-height:1}
+.big small{font-size:1.1rem;font-weight:600;color:var(--ink-soft)}
+.verdict{margin:.4rem 0 1.4rem;color:var(--ink-soft)}
+.tw{overflow-x:auto;margin:1rem 0}
+table{border-collapse:collapse;width:100%;font-size:1rem}
+th,td{border:1px solid var(--line);padding:.45rem .6rem;text-align:left}
+th{background:var(--blue-tint);font-family:"Bricolage Grotesque",sans-serif}
+td.num{text-align:center;white-space:nowrap}
+.meter{height:8px;border-radius:999px;background:var(--grid);overflow:hidden;min-width:70px}
+.meter span{display:block;height:100%;background:var(--green)}
+.miss{border-top:1px solid var(--line);padding:.9rem 0}
+.miss p{margin:.2rem 0}
+.miss .q{font-weight:700}
+.miss .a{color:var(--green)}
+.miss .y{color:var(--red)}
+h3{font-size:1.15rem;margin-top:1.6rem}
+details.keyset{border:2px solid var(--line);border-radius:12px;margin:.7rem 0;background:var(--panel)}
+details.keyset summary{cursor:pointer;padding:.7rem 1rem;font-family:"Bricolage Grotesque",sans-serif;font-weight:700}
+details.keyset[open] summary{border-bottom:1px solid var(--line)}
+.key ol{margin:0;padding:.4rem 1rem .8rem 2.6rem}
+.key li{padding:.5rem 0;border-bottom:1px solid var(--line)}
+.key li:last-child{border-bottom:none}
+.key .ans{color:var(--green);font-weight:700}
+.key .why{color:var(--ink-soft);font-size:.98rem}
+.lvl{font-size:.82rem;border:1.5px solid var(--line);border-radius:999px;padding:0 .5rem;margin-left:.3rem;white-space:nowrap}
+
+/* Editor */
+.ed h2{margin-bottom:.2rem}
+.ed .sub{color:var(--ink-soft);margin:0 0 1.2rem}
+.ed fieldset{border:2px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin:0 0 1.2rem}
+.ed legend{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;padding:0 .4rem}
+.radios{display:grid;gap:.5rem}
+.radios label{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.radios input[type=number]{width:5.5rem}
+.ed input[type=text],.ed input[type=number],.ed textarea,.ed select{border:2px solid var(--line);border-radius:8px;padding:.4rem .55rem;background:var(--paper);max-width:100%}
+.ed input[type=text],.ed textarea{width:100%}
+.ed textarea{min-height:3.6rem;resize:vertical}
+.fld{margin-bottom:.7rem}
+.fld > span{display:block;font-weight:700;font-size:.95rem;margin-bottom:.2rem}
+.fld small{color:var(--ink-soft);font-weight:400}
+.grp-head{display:flex;justify-content:space-between;align-items:center;gap:.6rem;margin:1.4rem 0 .5rem;flex-wrap:wrap}
+.grp-head h3{margin:0}
+.qcard{border:2px solid var(--line);border-radius:12px;margin-bottom:.6rem;background:var(--panel)}
+.qcard.bad{border-color:var(--red)}
+.qhead{display:grid;grid-template-columns:2.2rem 1fr auto;gap:.6rem;align-items:center;padding:.6rem .8rem}
+.qhead .num{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;color:var(--ink-soft)}
+.qhead .prev{font-size:1rem;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.qhead .prev em{color:var(--ink-soft)}
+.qbody{border-top:1px solid var(--line);padding:.9rem .9rem .4rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media (max-width:520px){.two{grid-template-columns:1fr}.qhead{grid-template-columns:1.8rem 1fr}.qhead .row{grid-column:1/-1}}
+.ans-ok input{border-color:var(--green)!important}
+.errs{color:var(--red);font-size:.95rem;margin:.2rem 0 .6rem}
+.savebar{position:sticky;bottom:0;margin-top:1rem;background:var(--panel);border:2px solid var(--ink);border-radius:12px;padding:.7rem .9rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding-bottom:calc(.7rem + env(safe-area-inset-bottom,0px))}
+.savebar .st{margin-right:auto;font-size:.95rem;color:var(--ink-soft)}
+.banner{background:var(--pencil-tint);border-left:6px solid var(--pencil);border-radius:0 10px 10px 0;padding:.7rem 1rem;margin-bottom:1rem}
+/* Mode + presenter */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1.2rem 0 .4rem}
+@media (max-width:520px){.modes{grid-template-columns:1fr}}
+.mode{border:2px solid var(--line);background:var(--panel);border-radius:12px;padding:.8rem 1rem;text-align:left;cursor:pointer}
+.mode b{font-family:"Bricolage Grotesque",sans-serif;display:block}
+.mode small{color:var(--ink-soft);font-size:.95rem}
+.mode[aria-pressed="true"]{border-color:var(--ink);background:var(--pencil-tint)}
+.lbl-sm{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;margin:1.2rem 0 0}
+.timer-note input{width:5rem;border:2px solid var(--line);border-radius:8px;padding:.25rem .45rem;background:var(--paper)}
+.wrap.wide{max-width:1100px}
+.present{padding:1.6rem 2rem}
+.p-top{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;color:var(--ink-soft);font-size:1.05rem}
+.p-top .sp{margin-right:auto;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;color:var(--ink)}
+.p-timer{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;margin:1rem 0 1.4rem}
+.p-clock{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(2.6rem,7vw,4.2rem);line-height:1;font-variant-numeric:tabular-nums;min-width:4ch}
+.p-clock.low{color:var(--red)}
+.p-clock.done{font-size:clamp(1.8rem,5vw,2.6rem);color:var(--red)}
+.p-tbar{height:14px;background:var(--grid);border-radius:999px;overflow:hidden}
+.p-tbar span{display:block;height:100%;background:var(--pencil);transition:width .1s linear}
+.p-tbar.low span{background:var(--red)}
+.p-stem{font-size:clamp(1.5rem,3.2vw,2.2rem);font-weight:700;line-height:1.3;margin-bottom:1.4rem}
+.p-opts{display:grid;gap:.7rem}
+.p-opt{display:grid;grid-template-columns:2.6rem 1fr;gap:.6rem;align-items:start;border:2px solid var(--line);border-radius:12px;padding:.75rem 1rem;font-size:clamp(1.15rem,2.4vw,1.6rem);line-height:1.35}
+.p-opt .l{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;color:var(--ink-soft)}
+.p-opt.right{border-color:var(--green);background:var(--green-tint)}
+.p-opt.right .l{color:var(--green)}
+.p-opt.dim{opacity:.45}
+.p-fb{margin-top:1.1rem;background:var(--green-tint);border-radius:12px;padding:1rem 1.2rem;font-size:clamp(1.05rem,2vw,1.35rem)}
+.p-fb b{font-family:"Bricolage Grotesque",sans-serif}
+.p-ctrl{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--line)}
+.p-ctrl .grow{flex:1}
+.p-ctrl .btn{font-size:1.05rem}
+.kbd{font-size:.9rem;color:var(--ink-soft);margin:.7rem 0 0}
+.runkey{width:100%}
+.runkey td.l{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;text-align:center;color:var(--green);width:3rem}
+.runkey td.n{text-align:center;width:3rem;color:var(--ink-soft)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="quiz-data" type="application/json">{"version": 1, "topics": {"1": "Topic 1: Defining behavior", "2": "Topic 2: Recording systems"}, "topicNotes": {"1": "Target behaviors, observable and measurable terms, operational definitions", "2": "Event, duration, latency, interval methods, choosing a system"}, "timer": {"mode": "question", "quizMinutes": 30, "questionSeconds": 45}, "questions": [{"t": 1, "l": "R", "q": "Which of these is an observable behavior?", "a": "Raises her hand before speaking", "w": ["Feels proud of her work", "Is motivated to learn", "Understands the class rules"], "e": "You can see a hand go up. Feelings, motivation, and understanding happen inside the person, so they can't be seen directly."}, {"t": 1, "l": "R", "q": "The three basic properties of behavior are repeatability, temporal extent, and…", "a": "temporal locus.", "w": ["celeration.", "magnitude.", "social significance."], "e": "Repeatability (it can be counted), temporal extent (it takes time), and temporal locus (it happens at a certain moment)."}, {"t": 1, "l": "R", "q": "“Percentage correct” and “trials to criterion” are examples of…", "a": "derived measures.", "w": ["basic properties of behavior.", "recording systems.", "onset and offset criteria."], "e": "Derived measures combine basic measures, like correct responses out of total responses."}, {"t": 1, "l": "U", "q": "An operational definition is often compared to a recipe. Why?", "a": "Different observers who follow it should record the same results.", "w": ["It lists the steps for changing the behavior.", "It must be written by a specialist.", "It describes why the behavior happens."], "e": "A good recipe gives the same dish no matter who cooks. A good definition gives the same data no matter who observes."}, {"t": 1, "l": "U", "q": "Why does an operational definition need both examples and non-examples?", "a": "They show observers exactly what counts and what doesn't.", "w": ["They make the definition sound more formal.", "They show what the learner should do instead.", "They replace the need for a measurement dimension."], "e": "Examples show what to record. Non-examples rule out look-alike behaviors, which prevents disagreements."}, {"t": 1, "l": "U", "q": "What does it mean when a target behavior is “socially significant”?", "a": "Changing it will make a real difference in the learner's life.", "w": ["Many other learners show the same behavior.", "Classmates have noticed the behavior.", "The behavior happens mostly during social activities."], "e": "Good targets are chosen because changing them improves safety, learning, relationships, or opportunities."}, {"t": 1, "l": "A", "q": "A parent says, “Tina is clingy.” Which statement describes this in observable terms?", "a": "Tina holds her mother's hand and cries when her mother leaves the classroom.", "w": ["Tina feels insecure when her mother is away.", "Tina depends too much on her mother.", "Tina is afraid of being alone at school."], "e": "Holding a hand and crying can be seen and heard. Insecurity, dependence, and fear are interpretations."}, {"t": 1, "l": "A", "q": "A teacher says, “Marco is careless in math.” Which is the best measurable version of this concern?", "a": "Percentage of computation items Marco answers correctly", "w": ["Number of times Marco seems careless per day", "How careful Marco is on a scale of 1 to 10", "Minutes Marco spends thinking about each item"], "e": "Percentage correct is countable and fits a concern about accuracy."}, {"t": 1, "l": "A", "q": "A teacher's concern is, “Dino's crying episodes go on for too long.” Which dimension should be measured?", "a": "Duration", "w": ["Rate", "Latency", "Percentage correct"], "e": "The concern is how long each episode lasts, so we measure duration."}, {"t": 1, "l": "A", "q": "Which definition passes the Dead Man's Test?", "a": "Stands in line with hands at his sides", "w": ["Does not push classmates in line", "Is not noisy in the hallway", "Never runs in the hallway"], "e": "A dead person can also “not push,” “not be noisy,” and “never run.” Standing with hands at his sides is something only a living person does."}, {"t": 1, "l": "N", "q": "Two observers disagree on whether tossing paper into the trash bin from far away counts as “throwing objects.” Which part of the definition most needs revision?", "a": "The non-examples", "w": ["The label", "The measurement dimension", "The school's behavior policy"], "e": "Non-examples tell observers which look-alike actions don't count, which is exactly where these two disagreed."}, {"t": 1, "l": "N", "q": "A teacher writes: “Elle is off-task whenever she is daydreaming.” What is the main flaw?", "a": "It defines the behavior using something that cannot be seen.", "w": ["It doesn't say how often Elle is off-task.", "It uses the label “off-task.”", "It is too short to be an operational definition."], "e": "Daydreaming happens in the mind. The definition should describe what Elle does, like looking away from her paper."}, {"t": 1, "l": "N", "q": "A teacher counts how many times a learner raises his hand per hour. Which property of behavior does this measure?", "a": "Repeatability", "w": ["Temporal extent", "Temporal locus", "Social significance"], "e": "Counting depends on the behavior being able to happen again and again, which is repeatability."}, {"t": 1, "l": "E", "q": "Which is the best operational definition of out-of-seat behavior?", "a": "Any time Ken's bottom loses contact with his chair during seatwork without the teacher's permission", "w": ["Ken is restless and cannot stay in his seat", "Ken leaves his seat because he is bored", "Ken does not stay seated during seatwork"], "e": "It's observable, has a clear start, and has an exception. The others use feelings, reasons, or fail the Dead Man's Test."}, {"t": 1, "l": "E", "q": "Which behavior should be given the highest priority as a target behavior?", "a": "A learner bites his own hand until it bleeds.", "w": ["A learner chews on the end of his pencil.", "A learner prefers to use a red pen.", "A learner hums softly while drawing."], "e": "Behaviors that are dangerous to the learner or others come first."}, {"t": 2, "l": "R", "q": "Which recording systems are discontinuous?", "a": "Whole-interval, partial-interval, and momentary time sampling", "w": ["Event, duration, and latency recording", "Event recording, PLACHECK, and duration recording", "Latency recording and whole-interval recording only"], "e": "Discontinuous systems sample the behavior in time blocks instead of recording every occurrence."}, {"t": 2, "l": "R", "q": "Which method scores an interval as “+” if the behavior happens at any moment during it?", "a": "Partial-interval recording", "w": ["Whole-interval recording", "Momentary time sampling", "Duration recording"], "e": "Partial-interval is the “generous judge”: even one brief occurrence counts."}, {"t": 2, "l": "U", "q": "Why is momentary time sampling practical for a teacher who is also teaching?", "a": "She only needs to look at the learner at the end of each interval.", "w": ["It gives the exact number of times the behavior happened.", "It does not need a timer.", "It records every second of the behavior."], "e": "MTS only checks one moment per interval, so the teacher can keep teaching in between."}, {"t": 2, "l": "U", "q": "What must a behavior have before duration recording can be used?", "a": "A clear start and a clear end", "w": ["A high rate of occurrence", "A teacher instruction before it", "A group of learners showing it"], "e": "You can't press start and stop on a stopwatch if you don't know when the behavior begins and ends."}, {"t": 2, "l": "A", "q": "A learner answered 24 math facts in 8 minutes. What is the rate?", "a": "3 per minute", "w": ["0.33 per minute", "16 per minute", "32 per minute"], "e": "Rate = count ÷ time = 24 ÷ 8 = 3 per minute."}, {"t": 2, "l": "A", "q": "A learner had three tantrums lasting 3, 7, and 5 minutes. What is the total duration?", "a": "15 minutes", "w": ["5 minutes", "7 minutes", "10 minutes"], "e": "Total duration adds all episodes: 3 + 7 + 5 = 15 minutes. (The average would be 5 minutes.)"}, {"t": 2, "l": "A", "q": "Using whole-interval recording, a learner was on-task for 9 of the 10 seconds in an interval. How is it scored?", "a": "Minus (–), because she was not on-task for the whole interval", "w": ["Plus (+), because she was on-task most of the interval", "Plus (+), because she was on-task at the end", "Half a point, because she was almost on-task"], "e": "Whole-interval is the strict judge. Anything less than the whole interval gets a minus."}, {"t": 2, "l": "A", "q": "During a PLACHECK, 12 of 30 learners were on-task at the beep. What percentage was on-task?", "a": "40%", "w": ["12%", "18%", "60%"], "e": "12 ÷ 30 × 100 = 40%."}, {"t": 2, "l": "A", "q": "The teacher says, “Open your books.” When does the observer start and stop timing latency?", "a": "Start when the instruction ends; stop when the learner begins to open the book.", "w": ["Start when the instruction begins; stop when the book is fully open.", "Start when the learner touches the book; stop when the lesson begins.", "Start when the learner looks at the teacher; stop when the learner sits down."], "e": "Latency runs from the end of the instruction to the start of the response."}, {"t": 2, "l": "N", "q": "A learner rocks back and forth about 40 times a minute. Why is event recording a poor choice?", "a": "The responses are too rapid to count accurately.", "w": ["Rocking has no clear social significance.", "Event recording only works for behaviors to increase.", "Rocking cannot be observed by a teacher."], "e": "Very fast, repeated behaviors are hard to count one by one. An interval method works better."}, {"t": 2, "l": "N", "q": "Partial-interval data showed talking out in 90% of intervals, but each instance lasted only a second or two. What best explains the high number?", "a": "Partial-interval overestimates because even a brief instance scores the whole interval.", "w": ["The learner talked out for 90% of the session.", "Partial-interval underestimates brief behaviors.", "The observer must have miscounted."], "e": "One second of talking makes the whole interval a “+,” so the percentage looks much higher than the actual time."}, {"t": 2, "l": "N", "q": "A teacher is concerned about how much learning time a learner loses by wandering around the room. Why is duration better than event recording here?", "a": "The concern is the amount of time lost, not the number of times he wanders.", "w": ["Wandering happens too fast to count.", "Event recording cannot be used during lessons.", "Duration recording is always more accurate."], "e": "Match the system to the concern: time lost → duration."}, {"t": 2, "l": "E", "q": "Jessa leaves her seat only twice a period, but each time she is gone for about 15 minutes. Which recording system fits best?", "a": "Duration recording", "w": ["Event recording", "Latency recording", "Partial-interval recording"], "e": "Two departures don't sound like much, but 30 minutes out of seat does. Duration shows the real problem."}, {"t": 2, "l": "E", "q": "Which data report is the most complete?", "a": "“Hand-raising: 0.5 per minute (event recording, 30-minute lesson).”", "w": ["“She raised her hand a lot.”", "“She raised her hand 15 times.”", "“Her hand-raising improved by 50%.”"], "e": "A complete report gives the measure, the method, and the session length."}, {"t": 2, "l": "E", "q": "A teacher wants to compare a learner's on-task behavior before and after an intervention. Which plan gives a fair comparison?", "a": "Use the same method and the same interval length in both phases.", "w": ["Use partial-interval before and whole-interval after.", "Use longer intervals after the intervention to save time.", "Observe only on the days the learner seems focused."], "e": "Changing the method or interval length can change the numbers even if the behavior didn't change."}]}</script>
+<script>
+(function(){
+  var APP_SRC = document.currentScript ? document.currentScript.textContent : "";
+  var CSS_SRC = document.getElementById("css").textContent;
+  var HEAD_SRC = '<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<title>Review Quiz: Defining, Observing and Measuring Behavior</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">';
+  var DATA = JSON.parse(document.getElementById("quiz-data").textContent);
+  var LV = {R:"Remember",U:"Understand",A:"Apply",N:"Analyze",E:"Evaluate"};
+  var STASH = "quizEditorStash";
+
+  function $(id){return document.getElementById(id);}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  function clone(o){return JSON.parse(JSON.stringify(o));}
+  function fmt(sec){sec=Math.max(0,Math.ceil(sec));var m=Math.floor(sec/60),s=sec%60;return m+":"+(s<10?"0":"")+s;}
+
+  document.getElementById("root").innerHTML =
+  '<div class="wrap">'+
+   '<div class="bar"><span class="t">Defining, Observing &amp; Measuring Behavior</span>'+
+     '<button class="btn ghost small" id="editBtn" hidden>Edit quiz</button>'+
+     '<button class="icon-btn" id="themeBtn" aria-label="Switch light or dark mode">◐</button></div>'+
+
+   '<section class="sheet start" id="startView">'+
+     '<h1>Review quiz</h1>'+
+     '<p class="lead">Check what you know before the exam. You\'ll see whether you\'re right after every question, with a short explanation.</p>'+
+     '<p class="lbl-sm">How will you use it?</p>'+
+     '<div class="modes" role="group" aria-label="Choose how to use the quiz">'+
+       '<button class="mode" data-mode="present" aria-pressed="true"><b>Present to the class</b><small>Big text and a timer for each item. You reveal each answer.</small></button>'+
+       '<button class="mode" data-mode="practice" aria-pressed="false"><b>Practice on my own</b><small>Answer on screen and get a score at the end.</small></button>'+
+     '</div>'+
+     '<p class="lbl-sm">What to cover</p>'+
+     '<div class="choices" role="group" aria-label="Choose what to review" id="choices"></div>'+
+     '<div class="timer-note" id="timerNote" hidden></div>'+
+     '<button class="btn" id="startBtn">Start quiz</button>'+
+     '<p class="note">Questions and choices are shuffled every time, so you can take it again.</p>'+
+   '</section>'+
+
+   '<section class="sheet" id="qView" hidden>'+
+     '<div class="meta"><span id="qCount"></span><span class="row"><span class="tag" id="qTopic"></span><span class="tag" id="qLevel"></span><span class="clock" id="clock" hidden role="timer" aria-label="Time left"></span></span></div>'+
+     '<div class="progress" aria-hidden="true"><span id="qBar"></span></div>'+
+     '<div class="tbar" aria-hidden="true"><span id="tBar"></span></div>'+
+     '<div class="stem" id="qStem"></div>'+
+     '<div class="opts" id="qOpts"></div>'+
+     '<div id="qFb" aria-live="polite"></div>'+
+     '<div class="foot"><span class="live" id="qScore"></span><button class="btn" id="nextBtn" hidden>Next question</button></div>'+
+   '</section>'+
+
+   '<section class="sheet" id="rView" hidden>'+
+     '<div class="timesup" id="timesUp" hidden>Time\'s up. Questions you didn\'t reach are counted as missed.</div>'+
+     '<h2>Your score</h2>'+
+     '<div class="tallies" id="tallies" aria-hidden="true"></div>'+
+     '<div class="big" id="rBig"></div>'+
+     '<p class="verdict" id="rVerdict"></p>'+
+     '<div class="row"><button class="btn" id="retryMissBtn">Retry the ones I missed</button><button class="btn ghost" id="againBtn">Start over</button></div>'+
+     '<h3>By thinking skill</h3><div class="tw"><table id="rLevels"></table></div>'+
+     '<h3 id="missHead">Questions to review</h3><div id="rMiss"></div>'+
+     '<h3>Answer key</h3>'+
+     '<p class="note" style="margin-top:0">Every question in this quiz with its correct answer. Choices are shuffled on each try, so the key lists the answer itself instead of a letter.</p>'+
+     '<div id="rKey"></div>'+
+   '</section>'+
+
+   '<section class="sheet present" id="pView" hidden>'+
+     '<div class="p-top"><span class="sp" id="pCount"></span><span class="tag" id="pTopic"></span><span class="tag" id="pLevel"></span><button class="btn ghost small" id="pExit">End quiz</button></div>'+
+     '<div class="p-timer" id="pTimerWrap"><div class="p-clock" id="pClock" role="timer" aria-live="off"></div><div class="p-tbar" id="pTBarWrap"><span id="pTBar"></span></div></div>'+
+     '<div class="p-stem" id="pStem"></div>'+
+     '<div class="p-opts" id="pOpts"></div>'+
+     '<div id="pFb" aria-live="polite"></div>'+
+     '<div class="p-ctrl"><button class="btn ghost" id="pPause">Pause</button><button class="btn ghost" id="pAdd">Add 15 seconds</button><button class="btn ghost" id="pSound" aria-pressed="true">Sound on</button><span class="grow"></span><button class="btn" id="pMain">Show answer</button></div>'+
+     '<p class="kbd">Keyboard: Space pauses or resumes the timer. The right arrow key shows the answer, then goes to the next item.</p>'+
+   '</section>'+
+   '<section class="sheet" id="pEnd" hidden>'+
+     '<h2>End of quiz</h2>'+
+     '<p class="lead" style="color:var(--ink-soft)">Here are the answers for this round, in the order they were shown. Students can use this to check their papers.</p>'+
+     '<div class="row" style="margin:1rem 0"><button class="btn" id="pAgain">Present again</button><button class="btn ghost" id="pHome">Back to start</button></div>'+
+     '<div class="tw"><table class="runkey" id="pKey"></table></div>'+
+   '</section>'+
+   '<section class="sheet ed" id="edView" hidden></section>'+
+  '</div>';
+
+  $("themeBtn").onclick=function(){
+    var r=document.documentElement,c=r.getAttribute("data-theme");
+    var dark=c?c==="dark":(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+    r.setAttribute("data-theme",dark?"light":"dark");
+  };
+
+  /* ================= QUIZ ================= */
+  var set="all", queue=[], idx=0, score=0, answers=[], keySet="all", mode="present", presentSecs=DATA.timer.questionSeconds||45;
+  var timer={id:null,end:0,total:0,kind:null}, timedOut=false;
+
+  function pool(s){var r=[];DATA.questions.forEach(function(q,i){if(s==="all"||String(q.t)===String(s))r.push(i);});return r;}
+  function show(v){["startView","qView","rView","edView","pView","pEnd"].forEach(function(id){$(id).hidden=id!==v;});document.querySelector(".wrap").classList.toggle("wide",v==="pView"||v==="pEnd");window.scrollTo(0,0);}
+
+  function renderStart(){
+    var opts=[["all","Both topics","Everything from the lesson, mixed"],["1",DATA.topics["1"],DATA.topicNotes["1"]],["2",DATA.topics["2"],DATA.topicNotes["2"]]];
+    if(!pool(set).length) set="all";
+    $("choices").innerHTML=opts.map(function(o){
+      var n=pool(o[0]).length;
+      return '<button class="choice" data-set="'+o[0]+'" aria-pressed="'+(set===o[0])+'"'+(n?'':' disabled')+'><span class="dot"></span><span><b>'+esc(o[1])+'</b><small>'+esc(o[2])+'</small></span><span class="n">'+n+' question'+(n===1?'':'s')+'</span></button>';
+    }).join("");
+    $("choices").querySelectorAll(".choice").forEach(function(b){b.onclick=function(){set=b.dataset.set;renderStart();};});
+    var t=DATA.timer, note=$("timerNote");
+    document.querySelectorAll(".mode").forEach(function(m){m.setAttribute("aria-pressed",String(m.dataset.mode===mode));});
+    if(mode==="present"){note.hidden=false;note.innerHTML='<span aria-hidden="true">⏱</span><label>Time for each item: <input type="number" id="pSecs" min="5" max="600" value="'+presentSecs+'"> seconds</label>';
+      $("pSecs").oninput=function(){var v=parseInt(this.value,10);if(v>=5)presentSecs=v;};}
+    else if(t.mode==="quiz"){note.hidden=false;note.innerHTML='<span aria-hidden="true">⏱</span><span>Timed: you\'ll have <b>'+quizMinutesFor(pool(set).length)+' minutes</b> for this quiz.</span>';}
+    else if(t.mode==="question"){note.hidden=false;note.innerHTML='<span aria-hidden="true">⏱</span><span>Timed: you\'ll have <b>'+t.questionSeconds+' seconds</b> for each question.</span>';}
+    else note.hidden=true;
+    $("startBtn").disabled=!pool(set).length;
+  }
+  function quizMinutesFor(n){var total=DATA.questions.length||1;return Math.max(1,Math.ceil(DATA.timer.quizMinutes*n/total));}
+
+  function stopTimer(){if(timer.id){clearInterval(timer.id);timer.id=null;}}
+  function startTimer(seconds,kind,onEnd){
+    stopTimer(); timer.total=seconds; timer.end=Date.now()+seconds*1000; timer.kind=kind;
+    $("clock").hidden=false;
+    var tick=function(){
+      var left=(timer.end-Date.now())/1000;
+      $("clock").textContent="⏱ "+fmt(left);
+      $("clock").classList.toggle("low",left<=Math.max(10,timer.total*0.2));
+      $("tBar").style.width=Math.max(0,left/timer.total*100)+"%";
+      if(left<=0){stopTimer();onEnd();}
+    };
+    tick(); timer.id=setInterval(tick,250);
+  }
+
+  function begin(ids){
+    stopTimer(); timedOut=false;
+    queue=shuffle(ids).map(function(i){var q=DATA.questions[i];return {i:i,opts:shuffle([q.a].concat(q.w))};});
+    idx=0;score=0;answers=[];show("qView");
+    $("clock").hidden=true;$("tBar").style.width="0";
+    if(DATA.timer.mode==="quiz") startTimer(quizMinutesFor(queue.length)*60,"quiz",quizTimeUp);
+    render();
+  }
+  $("startBtn").onclick=function(){keySet=set;if(mode==="present")presentBegin(pool(set));else begin(pool(set));};
+  document.querySelectorAll(".mode").forEach(function(m){m.onclick=function(){mode=m.dataset.mode;renderStart();};});
+  $("againBtn").onclick=function(){renderStart();show("startView");};
+  $("retryMissBtn").onclick=function(){
+    var missed=answers.filter(function(a){return !a.ok;}).map(function(a){return a.i;});
+    if(missed.length) begin(missed);
+  };
+
+  function render(){
+    var item=queue[idx],q=DATA.questions[item.i];
+    $("qCount").textContent="Question "+(idx+1)+" of "+queue.length;
+    $("qTopic").textContent="Topic "+q.t;
+    $("qLevel").textContent=LV[q.l]||q.l;
+    $("qBar").style.width=(idx/queue.length*100)+"%";
+    $("qStem").textContent=q.q;
+    $("qFb").innerHTML="";$("nextBtn").hidden=true;
+    $("qScore").textContent=idx?score+" correct so far":"";
+    $("qOpts").innerHTML=item.opts.map(function(o,k){return '<button class="opt" data-k="'+k+'"><span class="l">'+"ABCD"[k]+'.</span><span>'+esc(o)+'</span></button>';}).join("");
+    $("qOpts").querySelectorAll(".opt").forEach(function(b){b.onclick=function(){answer(+b.dataset.k);};});
+    if(DATA.timer.mode==="question") startTimer(DATA.timer.questionSeconds,"question",function(){answer(-1);});
+    var first=$("qOpts").querySelector(".opt"); if(first) first.focus({preventScroll:true});
+  }
+  function answer(k){
+    if(answers.length>idx) return;
+    if(timer.kind==="question") stopTimer();
+    var item=queue[idx],q=DATA.questions[item.i],chosen=k>=0?item.opts[k]:null,ok=chosen===q.a;
+    if(ok)score++;
+    answers.push({i:item.i,ok:ok,chosen:chosen});
+    $("qOpts").querySelectorAll(".opt").forEach(function(b,j){
+      b.disabled=true;
+      if(item.opts[j]===q.a) b.classList.add("right");
+      else if(j===k) b.classList.add("wrong");
+    });
+    var letter="ABCD"[item.opts.indexOf(q.a)];
+    var head=ok?"Correct. ":(k<0?"Time's up. The answer is "+letter+". ":"Not quite. The answer is "+letter+". ");
+    $("qFb").innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>'+head+'</b>'+esc(q.e||"")+'</div>';
+    $("qScore").textContent=score+" of "+(idx+1)+" correct";
+    $("nextBtn").textContent=idx===queue.length-1?"See my score":"Next question";
+    $("nextBtn").hidden=false;$("nextBtn").focus({preventScroll:true});
+    $("qBar").style.width=((idx+1)/queue.length*100)+"%";
+  }
+  $("nextBtn").onclick=function(){ if(idx<queue.length-1){idx++;render();} else results(); };
+  function quizTimeUp(){
+    timedOut=true;
+    for(var j=answers.length;j<queue.length;j++) answers.push({i:queue[j].i,ok:false,chosen:null});
+    results();
+  }
+
+  function tallySvg(n){
+    var p="",i;
+    for(i=0;i<Math.min(n,4);i++){var x=8+i*12;p+='<path d="M'+x+' 6 L'+(x+1)+' 50" style="animation-delay:'+(i*0.06)+'s"/>';}
+    if(n===5)p+='<path d="M2 40 L56 14" style="animation-delay:.3s"/>';
+    return '<svg viewBox="0 0 60 56" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">'+p+'</svg>';
+  }
+  function results(){
+    stopTimer();$("clock").hidden=true;
+    show("rView");
+    $("timesUp").hidden=!timedOut;
+    var t="",left=score,g=0;
+    while(left>0){var n=Math.min(5,left);t+=tallySvg(n).replace(/animation-delay:([\d.]+)s/g,function(m,d){return "animation-delay:"+(g*0.35+parseFloat(d)).toFixed(2)+"s";});left-=n;g++;}
+    $("tallies").innerHTML=t;
+    var pct=Math.round(score/queue.length*100);
+    $("rBig").innerHTML=score+' <small>of '+queue.length+' correct ('+pct+'%)</small>';
+    $("rVerdict").textContent= pct>=90?"Excellent. You're ready for the exam.":pct>=75?"Good work. Review the questions you missed below.":pct>=50?"You're getting there. Go over the missed questions, then retry them.":"Review the lesson first, then try the quiz again.";
+    var lv={};
+    answers.forEach(function(a){var l=DATA.questions[a.i].l;lv[l]=lv[l]||{c:0,t:0};lv[l].t++;if(a.ok)lv[l].c++;});
+    var rows='<tr><th>Thinking skill</th><th>Correct</th><th style="width:40%">Progress</th></tr>';
+    ["R","U","A","N","E"].forEach(function(l){ if(!lv[l])return; var p=Math.round(lv[l].c/lv[l].t*100);
+      rows+='<tr><td>'+LV[l]+'</td><td class="num">'+lv[l].c+' / '+lv[l].t+'</td><td><div class="meter" role="img" aria-label="'+p+' percent"><span style="width:'+p+'%"></span></div></td></tr>';});
+    $("rLevels").innerHTML=rows;
+    var missed=answers.filter(function(a){return !a.ok;});
+    $("retryMissBtn").hidden=!missed.length;
+    $("missHead").textContent=missed.length?"Questions to review":"No missed questions";
+    $("rMiss").innerHTML=missed.length?missed.map(function(a){var q=DATA.questions[a.i];
+      return '<div class="miss"><p class="q">'+esc(q.q)+'</p><p class="y">Your answer: '+(a.chosen==null?'No answer (time ran out)':esc(a.chosen))+'</p><p class="a">Correct answer: '+esc(q.a)+'</p><p>'+esc(q.e||"")+'</p></div>';}).join(""):'<p>You answered every question correctly.</p>';
+    renderKey();
+  }
+  function renderKey(){
+    var topics=keySet==="all"?["1","2"]:[String(keySet)];
+    $("rKey").innerHTML=topics.map(function(t){
+      var items=DATA.questions.filter(function(q){return String(q.t)===t;});
+      if(!items.length) return "";
+      return '<details class="keyset key" open><summary>'+esc(DATA.topics[t])+' ('+items.length+' question'+(items.length===1?'':'s')+')</summary><ol>'+items.map(function(q){
+        return '<li><div>'+esc(q.q)+'<span class="lvl">'+(LV[q.l]||esc(q.l))+'</span></div><div class="ans">Answer: '+esc(q.a)+'</div><div class="why">'+esc(q.e||"")+'</div></li>';
+      }).join("")+'</ol></details>';
+    }).join("");
+  }
+
+  /* ================= PRESENTER ================= */
+  var pq=[], pi=0, pRevealed=false, pt={left:0,total:0,running:false,last:0,id:null,done:false}, sound=true, actx=null;
+  function beep(){
+    if(!sound) return;
+    try{
+      actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+      [0,0.28].forEach(function(off){
+        var o=actx.createOscillator(),g=actx.createGain();o.type="sine";o.frequency.value=880;
+        o.connect(g);g.connect(actx.destination);var t0=actx.currentTime+off;
+        g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(0.25,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+0.22);
+        o.start(t0);o.stop(t0+0.25);
+      });
+    }catch(e){}
+  }
+  function pDraw(){
+    var c=$("pClock"),bar=$("pTBar"),wrap=$("pTBarWrap");
+    if(pt.done){c.textContent="Time's up";c.className="p-clock done";bar.style.width="0";wrap.classList.add("low");return;}
+    var low=pt.left<=Math.min(10000,pt.total*0.25);
+    c.textContent=fmt(pt.left/1000);c.className="p-clock"+(low?" low":"");
+    bar.style.width=Math.max(0,pt.left/pt.total*100)+"%";wrap.classList.toggle("low",low);
+  }
+  function pTick(){
+    var now=Date.now();
+    if(pt.running){pt.left-=now-pt.last;}
+    pt.last=now;
+    if(pt.running&&pt.left<=0){pt.left=0;pt.running=false;pt.done=true;beep();pSyncButtons();}
+    pDraw();
+  }
+  function pStartClock(sec){
+    pt.total=sec*1000;pt.left=pt.total;pt.running=true;pt.done=false;pt.last=Date.now();
+    if(!pt.id) pt.id=setInterval(pTick,100);
+    pDraw();
+  }
+  function pStopAll(){pt.running=false;if(pt.id){clearInterval(pt.id);pt.id=null;}}
+  function pSyncButtons(){
+    $("pPause").textContent=pt.running?"Pause":"Resume";
+    $("pPause").disabled=pRevealed||pt.done;
+    $("pAdd").disabled=pRevealed;
+    $("pMain").textContent=!pRevealed?"Show answer":(pi===pq.length-1?"Finish":"Next item");
+  }
+  function presentBegin(ids){
+    stopTimer();
+    try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+    pq=shuffle(ids).map(function(i){var q=DATA.questions[i];return {i:i,opts:shuffle([q.a].concat(q.w))};});
+    pi=0;show("pView");pRender();
+  }
+  function pRender(){
+    var item=pq[pi],q=DATA.questions[item.i];pRevealed=false;
+    $("pCount").textContent="Item "+(pi+1)+" of "+pq.length;
+    $("pTopic").textContent=DATA.topics[String(q.t)]||("Topic "+q.t);
+    $("pLevel").textContent=LV[q.l]||q.l;
+    $("pStem").textContent=q.q;
+    $("pOpts").innerHTML=item.opts.map(function(o,k){return '<div class="p-opt"><span class="l">'+"ABCD"[k]+'.</span><span>'+esc(o)+'</span></div>';}).join("");
+    $("pFb").innerHTML="";
+    pStartClock(presentSecs);pSyncButtons();
+    $("pMain").focus({preventScroll:true});
+  }
+  function pReveal(){
+    var item=pq[pi],q=DATA.questions[item.i],k=item.opts.indexOf(q.a);
+    pRevealed=true;pt.running=false;
+    $("pOpts").querySelectorAll(".p-opt").forEach(function(el,j){el.classList.add(j===k?"right":"dim");});
+    $("pFb").innerHTML='<div class="p-fb"><b>Answer: '+"ABCD"[k]+'. </b>'+esc(q.e||"")+'</div>';
+    pSyncButtons();
+  }
+  function pMain(){
+    if(!pRevealed){pReveal();return;}
+    if(pi<pq.length-1){pi++;pRender();}else pFinish();
+  }
+  function pFinish(){
+    pStopAll();
+    $("pKey").innerHTML='<tr><th>Item</th><th>Answer</th><th>Question</th></tr>'+pq.map(function(item,n){
+      var q=DATA.questions[item.i],k=item.opts.indexOf(q.a);
+      return '<tr><td class="n">'+(n+1)+'</td><td class="l">'+"ABCD"[k]+'</td><td>'+esc(q.q)+'<div style="color:var(--green);font-weight:700">'+esc(q.a)+'</div></td></tr>';
+    }).join("");
+    show("pEnd");
+  }
+  $("pMain").onclick=pMain;
+  $("pPause").onclick=function(){if(pRevealed||pt.done)return;pt.running=!pt.running;pt.last=Date.now();pSyncButtons();};
+  $("pAdd").onclick=function(){if(pRevealed)return;pt.left+=15000;pt.total=Math.max(pt.total,pt.left);if(pt.done){pt.done=false;pt.running=true;pt.last=Date.now();}pSyncButtons();pDraw();};
+  $("pSound").onclick=function(){sound=!sound;this.setAttribute("aria-pressed",String(sound));this.textContent=sound?"Sound on":"Sound off";};
+  $("pExit").onclick=function(){pFinish();};
+  $("pAgain").onclick=function(){presentBegin(pq.map(function(x){return x.i;}));};
+  $("pHome").onclick=function(){pStopAll();renderStart();show("startView");};
+  document.addEventListener("keydown",function(ev){
+    if($("pView").hidden) return;
+    var tag=(ev.target.tagName||"").toLowerCase(); if(tag==="input"||tag==="textarea") return;
+    if(ev.key===" "||ev.code==="Space"){ev.preventDefault();$("pPause").click();}
+    else if(ev.key==="ArrowRight"){ev.preventDefault();pMain();}
+  });
+
+  /* ================= EDITOR (owner/editors only) ================= */
+  var artifactNS=null, work=null, open={}, dirty=false, readOnly=false, confirmDel=null;
+
+  (function initCaps(){
+    if(!window.claude||typeof window.claude.use!=="function") return;
+    Promise.all([window.claude.use("user"),window.claude.use("artifact")]).then(function(r){
+      var u=r[0]; artifactNS=r[1];
+      if(!u||!artifactNS) return;
+      return u.canEdit().then(function(can){
+        if(!can) return;
+        $("editBtn").hidden=false;
+        try{
+          var raw=sessionStorage.getItem(STASH);
+          if(raw){
+            if(raw===JSON.stringify(DATA)) sessionStorage.removeItem(STASH);
+            else pendingRestore=raw;
+          }
+        }catch(e){}
+      });
+    }).catch(function(){});
+  })();
+  var pendingRestore=null;
+
+  $("editBtn").onclick=function(){
+    stopTimer();pStopAll();
+    if(!work){work=clone(DATA);dirty=false;open={};}
+    renderEditor();show("edView");
+  };
+
+  function blankQ(t){return {t:+t,l:"R",q:"",a:"",w:["","",""],e:""};}
+  function problems(q){
+    var p=[];
+    if(!q.q.trim())p.push("Write the question.");
+    if(!q.a.trim())p.push("Add the correct answer.");
+    if(q.w.some(function(w){return !w.trim();}))p.push("Fill in all three wrong answers.");
+    var all=[q.a].concat(q.w).map(function(x){return x.trim().toLowerCase();}).filter(Boolean);
+    if(all.length===4&&new Set(all).size<4)p.push("The four choices must all be different.");
+    return p;
+  }
+
+  function renderEditor(){
+    var t=work.timer, html='';
+    html+='<h2>Edit quiz</h2><p class="sub">Changes are saved for everyone who opens this quiz once you press “Save and publish.” Students can\'t see this editor.</p>';
+    if(pendingRestore) html+='<div class="banner">Your last save didn\'t go through because the quiz changed somewhere else. <button class="btn small" data-act="restore">Restore my edits</button> <button class="btn ghost small" data-act="dropstash">Discard them</button></div>';
+    if(readOnly) html+='<div class="banner">This view is read-only, so changes can\'t be saved here.</div>';
+    html+='<fieldset><legend>Timer</legend><div class="radios">'+
+      '<label><input type="radio" name="tmode" value="off"'+(t.mode==="off"?" checked":"")+'> No timer</label>'+
+      '<label><input type="radio" name="tmode" value="quiz"'+(t.mode==="quiz"?" checked":"")+'> Time limit for the whole quiz: <input type="number" min="1" max="300" data-tf="quizMinutes" value="'+t.quizMinutes+'" aria-label="Minutes for the whole quiz"> minutes</label>'+
+      '<label><input type="radio" name="tmode" value="question"'+(t.mode==="question"?" checked":"")+'> Time limit for each item: <input type="number" min="5" max="600" data-tf="questionSeconds" value="'+t.questionSeconds+'" aria-label="Seconds per question"> seconds</label>'+
+      '</div><p class="note" style="margin-bottom:0">When you present to the class, each item uses the time per item (you can also change it on the start screen before presenting). The whole-quiz limit is for all '+work.questions.length+' questions. If a student reviews only one topic, their time is shortened to match.</p></fieldset>';
+    html+='<fieldset><legend>Topic names</legend><div class="two">'+
+      '<label class="fld"><span>Topic 1</span><input type="text" data-topic="1" value="'+esc(work.topics["1"])+'"></label>'+
+      '<label class="fld"><span>Topic 2</span><input type="text" data-topic="2" value="'+esc(work.topics["2"])+'"></label></div></fieldset>';
+    ["1","2"].forEach(function(tp){
+      var list=[];work.questions.forEach(function(q,i){if(String(q.t)===tp)list.push(i);});
+      html+='<div class="grp-head"><h3>'+esc(work.topics[tp])+' ('+list.length+')</h3><button class="btn ghost small" data-act="add" data-t="'+tp+'">Add a question</button></div>';
+      if(!list.length) html+='<p class="note">No questions yet. Add one so students can review this topic.</p>';
+      list.forEach(function(i,n){html+=qCard(i,n+1);});
+    });
+    html+='<div class="savebar"><span class="st" id="edStatus">'+(dirty?"You have unsaved changes.":"No changes yet.")+'</span>'+
+      '<button class="btn ghost" data-act="close">'+(dirty?"Discard changes":"Close editor")+'</button>'+
+      '<button class="btn" data-act="save"'+(dirty&&!readOnly?"":" disabled")+'>Save and publish</button></div>';
+    $("edView").innerHTML=html;
+  }
+  function qCard(i,n){
+    var q=work.questions[i], p=problems(q), isOpen=!!open[i];
+    var h='<div class="qcard'+(p.length&&q._touched?' bad':'')+'" id="qc'+i+'">';
+    h+='<div class="qhead"><span class="num">'+n+'.</span><span class="prev">'+(q.q.trim()?esc(q.q):'<em>New question</em>')+' <span class="lvl">'+(LV[q.l]||q.l)+'</span></span>'+
+       '<span class="row"><button class="btn ghost small" data-act="toggle" data-i="'+i+'" aria-expanded="'+isOpen+'">'+(isOpen?"Done":"Edit")+'</button>'+
+       '<button class="btn danger small" data-act="del" data-i="'+i+'">'+(confirmDel===i?"Confirm delete":"Delete")+'</button></span></div>';
+    if(isOpen){
+      h+='<div class="qbody">';
+      if(p.length&&q._touched) h+='<div class="errs">'+p.map(esc).join(" ")+'</div>';
+      h+='<div class="two"><label class="fld"><span>Topic</span><select data-i="'+i+'" data-f="t"><option value="1"'+(q.t==1?" selected":"")+'>Topic 1</option><option value="2"'+(q.t==2?" selected":"")+'>Topic 2</option></select></label>'+
+         '<label class="fld"><span>Thinking skill</span><select data-i="'+i+'" data-f="l">'+Object.keys(LV).map(function(k){return '<option value="'+k+'"'+(q.l===k?" selected":"")+'>'+LV[k]+'</option>';}).join("")+'</select></label></div>';
+      h+='<label class="fld"><span>Question</span><textarea data-i="'+i+'" data-f="q">'+esc(q.q)+'</textarea></label>';
+      h+='<label class="fld ans-ok"><span>Correct answer</span><input type="text" data-i="'+i+'" data-f="a" value="'+esc(q.a)+'"></label>';
+      for(var k=0;k<3;k++) h+='<label class="fld"><span>Wrong answer '+(k+1)+'</span><input type="text" data-i="'+i+'" data-f="w'+k+'" value="'+esc(q.w[k])+'"></label>';
+      h+='<label class="fld"><span>Explanation <small>(shown after answering and in the answer key)</small></span><textarea data-i="'+i+'" data-f="e">'+esc(q.e)+'</textarea></label>';
+      h+='</div>';
+    }
+    return h+'</div>';
+  }
+  function markDirty(){
+    dirty=true; var st=$("edStatus"); if(st) st.textContent="You have unsaved changes.";
+    var sb=document.querySelector('[data-act="save"]'); if(sb) sb.disabled=readOnly;
+    var cb=document.querySelector('[data-act="close"]'); if(cb) cb.textContent="Discard changes";
+  }
+
+  $("edView").addEventListener("input",function(ev){
+    var el=ev.target;
+    if(el.name==="tmode"){work.timer.mode=el.value;markDirty();return;}
+    if(el.dataset.tf){var v=parseInt(el.value,10);if(!isNaN(v)){work.timer[el.dataset.tf]=v;markDirty();}return;}
+    if(el.dataset.topic){work.topics[el.dataset.topic]=el.value;markDirty();return;}
+    if(el.dataset.f!=null){
+      var q=work.questions[+el.dataset.i],f=el.dataset.f;
+      q._touched=true;
+      if(f==="t")q.t=+el.value; else if(f[0]==="w"&&f.length===2)q.w[+f[1]]=el.value; else q[f]=el.value;
+      markDirty();
+      if(f==="t"||f==="l"){renderEditor();var c=$("qc"+el.dataset.i);if(c)c.scrollIntoView({block:"center"});}
+    }
+  });
+  $("edView").addEventListener("change",function(ev){if(ev.target.name==="tmode"){work.timer.mode=ev.target.value;markDirty();}});
+  $("edView").addEventListener("click",function(ev){
+    var b=ev.target.closest("[data-act]"); if(!b) return;
+    var act=b.dataset.act, i=b.dataset.i!=null?+b.dataset.i:null;
+    if(act!=="del") confirmDel=null;
+    if(act==="toggle"){open[i]=!open[i];if(!open[i])work.questions[i]._touched=true;renderEditor();var c=$("qc"+i);if(c)c.scrollIntoView({block:"nearest"});}
+    else if(act==="add"){work.questions.push(blankQ(b.dataset.t));var ni=work.questions.length-1;open[ni]=true;markDirty();renderEditor();var nc=$("qc"+ni);if(nc){nc.scrollIntoView({block:"center"});var ta=nc.querySelector("textarea");if(ta)ta.focus();}}
+    else if(act==="del"){
+      if(confirmDel!==i){confirmDel=i;renderEditor();return;}
+      confirmDel=null;work.questions.splice(i,1);var no={};Object.keys(open).forEach(function(k){k=+k;if(k<i)no[k]=open[k];else if(k>i)no[k-1]=open[k];});open=no;markDirty();renderEditor();
+    }
+    else if(act==="close"){work=null;dirty=false;open={};renderStart();show("startView");}
+    else if(act==="restore"){try{work=JSON.parse(pendingRestore);}catch(e){}pendingRestore=null;try{sessionStorage.removeItem(STASH);}catch(e){}markDirty();renderEditor();}
+    else if(act==="dropstash"){pendingRestore=null;try{sessionStorage.removeItem(STASH);}catch(e){}renderEditor();}
+    else if(act==="save") save();
+  });
+
+  function save(){
+    var bad=-1;
+    work.questions.forEach(function(q,i){if(problems(q).length){q._touched=true;open[i]=true;if(bad<0)bad=i;}});
+    if(!work.questions.length){$("edStatus").textContent="Add at least one question before saving.";return;}
+    var t=work.timer;
+    if(t.mode==="quiz"&&!(t.quizMinutes>=1)){$("edStatus").textContent="Set the whole-quiz time to at least 1 minute.";return;}
+    if(t.mode==="question"&&!(t.questionSeconds>=5)){$("edStatus").textContent="Set the time per question to at least 5 seconds.";return;}
+    if(bad>=0){renderEditor();$("edStatus").textContent="Some questions are incomplete. Fix the ones marked in red.";var c=$("qc"+bad);if(c)c.scrollIntoView({block:"center"});return;}
+    var out=clone(work);
+    out.questions=out.questions.map(function(q){return {t:+q.t,l:q.l,q:q.q.trim(),a:q.a.trim(),w:q.w.map(function(x){return x.trim();}),e:(q.e||"").trim()};});
+    out.topics={"1":out.topics["1"].trim()||"Topic 1","2":out.topics["2"].trim()||"Topic 2"};
+    out.version=(DATA.version||1)+1;
+    var html=buildDoc(out);
+    try{sessionStorage.setItem(STASH,JSON.stringify(out));}catch(e){}
+    var sb=document.querySelector('[data-act="save"]');if(sb)sb.disabled=true;
+    $("edStatus").textContent="Saving…";
+    artifactNS.publish(html).then(function(){
+      $("edStatus").textContent="Saved. The quiz is reloading with your changes.";
+    }).catch(function(err){
+      var code=err&&err.code;
+      if(code==="conflict"){$("edStatus").textContent="The quiz was changed somewhere else. Reloading the latest version…";return;}
+      try{sessionStorage.removeItem(STASH);}catch(e){}
+      if(code==="not_writer"||code==="not_granted"){readOnly=true;renderEditor();return;}
+      if(code==="too_large"){$("edStatus").textContent="The quiz is too large to save. Remove some questions and try again.";}
+      else if(code==="rate_limited"){$("edStatus").textContent="Saving is temporarily limited. Wait a minute, then press Save again.";}
+      else {$("edStatus").textContent="Couldn't save ("+(code||"error")+"). Your edits are still here; try again.";}
+      if(sb)sb.disabled=false;
+    });
+  }
+  function buildDoc(data){
+    var json=JSON.stringify(data).replace(/</g,"\\u003c");
+    var S="scr"+"ipt";
+    return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"+HEAD_SRC+"\n<style id=\"css\">"+CSS_SRC+"</style>\n</head>\n<body>\n<div id=\"root\"></div>\n<"+S+" id=\"quiz-data\" type=\"application/json\">"+json+"</"+S+">\n<"+S+">"+APP_SRC+"</"+S+">\n</body>\n</html>\n";
+  }
+
+  renderStart(); show("startView");
+})();
+</script>
+</body>
+</html>
